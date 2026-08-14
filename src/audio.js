@@ -5,16 +5,21 @@ export class AudioController {
     this.isPlaying = false;
     this.oscillators = null;
     
-    // HTML5 Audio Element for Sal Priadi - Foto Kita Blur or user custom audio
+    // HTML5 Audio Element for Sal Priadi - Foto Kita Blur
     this.audioElement = new Audio();
-    this.audioElement.loop = true;
+    this.audioElement.loop = false; // Plays until the end of the song
     this.audioElement.volume = 0;
     
-    // Default audio track (Sal Priadi - Foto Kita Blur / Local or Fallback audio URL)
+    // Default audio track (Sal Priadi - Foto Kita Blur)
     this.audioElement.src = '/audio/foto-kita-blur.mp3';
     
-    this.songStartTime = 25; // Default start timestamp in seconds (Chorus / "Foto kita blur")
+    this.songStartTime = 25; // Default start timestamp in seconds
     this.fadeInterval = null;
+
+    // Reset playing state when song finishes so next gesture can trigger again
+    this.audioElement.onended = () => {
+      this.isPlaying = false;
+    };
   }
 
   setSongStartTime(seconds) {

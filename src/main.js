@@ -60,11 +60,11 @@ hands.onResults((results) => {
   if (peaceDetected) {
     statusBadge.classList.add('active');
     statusText.textContent = '✌️ PEACE TERDETEKSI - BLUR ACTIVE!';
-    audio.start();
+    audio.start(); // Triggers music once, plays continuously until end!
   } else {
     statusBadge.classList.remove('active');
     statusText.textContent = 'Mencari Gestur ✌️...';
-    audio.stop();
+    // Screen returns to clean normal feed, but music continues playing!
   }
 });
 
