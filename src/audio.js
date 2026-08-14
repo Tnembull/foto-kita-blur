@@ -13,7 +13,12 @@ export class AudioController {
     // Default audio track (Sal Priadi - Foto Kita Blur / Local or Fallback audio URL)
     this.audioElement.src = '/audio/foto-kita-blur.mp3';
     
+    this.songStartTime = 25; // Default start timestamp in seconds (Chorus / "Foto kita blur")
     this.fadeInterval = null;
+  }
+
+  setSongStartTime(seconds) {
+    this.songStartTime = Number(seconds) || 0;
   }
 
   init() {
@@ -61,16 +66,25 @@ export class AudioController {
 
   startSong() {
     clearInterval(this.fadeInterval);
+    try {
+      if (this.songStartTime >= 0) {
+        this.audioElement.currentTime = this.songStartTime;
+      }
+    } catch (e) {
+      console.warn('Could not set currentTime:', e);
+    }
+
     this.audioElement.play().then(() => {
-      let vol = this.audioElement.volume;
+      let vol = 0;
+      this.audioElement.volume = 0;
       this.fadeInterval = setInterval(() => {
-        if (vol < 0.85) {
-          vol += 0.05;
-          this.audioElement.volume = Math.min(0.85, vol);
+        if (vol < 0.9) {
+          vol += 0.1;
+          this.audioElement.volume = Math.min(0.9, vol);
         } else {
           clearInterval(this.fadeInterval);
         }
-      }, 50);
+      }, 40);
     }).catch((err) => {
       console.warn('Audio play auto-play blocked or source missing:', err);
     });

@@ -13,6 +13,8 @@ const blurSlider = document.getElementById('blur-slider');
 const blurValText = document.getElementById('blur-val');
 const audioModeSelect = document.getElementById('audio-mode-select');
 const audioFileInput = document.getElementById('audio-file-input');
+const audioStartInput = document.getElementById('audio-start-input');
+const audioStartVal = document.getElementById('audio-start-val');
 const cameraSelect = document.getElementById('camera-select');
 const captureBtn = document.getElementById('capture-btn');
 const previewModal = document.getElementById('preview-modal');
@@ -146,6 +148,14 @@ audioFileInput.addEventListener('change', (e) => {
     audioModeSelect.value = 'song';
   }
 });
+
+if (audioStartInput) {
+  audioStartInput.addEventListener('input', (e) => {
+    const sec = e.target.value;
+    if (audioStartVal) audioStartVal.textContent = sec;
+    audio.setSongStartTime(sec);
+  });
+}
 
 cameraSelect.addEventListener('change', (e) => {
   startCamera(e.target.value);
