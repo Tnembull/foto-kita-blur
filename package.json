@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 3000 --host",
-    "tunnel": "cloudflared tunnel run --url http://localhost:3000 foto-blur"
+    "tunnel": "cloudflared tunnel run --url http://localhost:3000 5a031fff-25e0-423e-8181-950fd2a5179a"
   },
   "devDependencies": {
     "vite": "^5.0.0"
