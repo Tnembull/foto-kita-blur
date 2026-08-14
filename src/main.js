@@ -71,22 +71,33 @@ requestAnimationFrame(loop);
 // Initialize Camera
 async function setupCamera() {
   try {
+    // Request permission first to populate device labels & trigger browser prompt
+    const initialStream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+    initialStream.getTracks().forEach((track) => track.stop());
+
     const devices = await navigator.mediaDevices.enumerateDevices();
     const videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
     cameraSelect.innerHTML = '';
-    videoDevices.forEach((device, idx) => {
+    if (videoDevices.length === 0) {
       const option = document.createElement('option');
-      option.value = device.deviceId;
-      option.text = device.label || `Kamera ${idx + 1}`;
+      option.text = 'Kamera Default';
       cameraSelect.appendChild(option);
-    });
+    } else {
+      videoDevices.forEach((device, idx) => {
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+        option.text = device.label || `Kamera ${idx + 1}`;
+        cameraSelect.appendChild(option);
+      });
+    }
 
     const selectedDeviceId = videoDevices[0]?.deviceId;
     startCamera(selectedDeviceId);
   } catch (err) {
     console.error('Gagal mengakses kamera:', err);
-    statusText.textContent = 'Akses Kamera Ditolak / Tidak Tersedia';
+    statusBadge.classList.remove('active');
+    statusText.textContent = '⚠️ Izinkan Akses Kamera di Browser!';
   }
 }
 
