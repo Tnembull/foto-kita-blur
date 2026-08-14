@@ -30,8 +30,14 @@
       </div>
 
       <div class="control-item">
-        <label for="audio-toggle">Sound Ambient</label>
-        <button id="audio-toggle" class="btn-secondary">🔊 Sound: Aktif</button>
+        <label for="audio-mode-select">Pilih Musik / Audio</label>
+        <select id="audio-mode-select">
+          <option value="song">🎵 Sal Priadi - Foto Kita Blur</option>
+          <option value="synth">🔔 Sound Effect Synth</option>
+          <option value="upload">📁 Upload MP3 Sendiri...</option>
+          <option value="muted">🔇 Mute Audio</option>
+        </select>
+        <input type="file" id="audio-file-input" accept="audio/*" style="display: none;" />
       </div>
 
       <div class="control-item">

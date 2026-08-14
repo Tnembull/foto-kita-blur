@@ -11,7 +11,8 @@ const statusBadge = document.getElementById('status-badge');
 const statusText = document.getElementById('status-text');
 const blurSlider = document.getElementById('blur-slider');
 const blurValText = document.getElementById('blur-val');
-const audioToggleBtn = document.getElementById('audio-toggle');
+const audioModeSelect = document.getElementById('audio-mode-select');
+const audioFileInput = document.getElementById('audio-file-input');
 const cameraSelect = document.getElementById('camera-select');
 const captureBtn = document.getElementById('capture-btn');
 const previewModal = document.getElementById('preview-modal');
@@ -53,11 +54,11 @@ hands.onResults((results) => {
   if (peaceDetected) {
     statusBadge.classList.add('active');
     statusText.textContent = '✌️ PEACE TERDETEKSI - BLUR ACTIVE!';
-    audio.startChime();
+    audio.start();
   } else {
     statusBadge.classList.remove('active');
     statusText.textContent = 'Mencari Gestur ✌️...';
-    audio.stopChime();
+    audio.stop();
   }
 });
 
@@ -127,9 +128,23 @@ blurSlider.addEventListener('input', (e) => {
   renderer.setMaxBlurRadius(val);
 });
 
-audioToggleBtn.addEventListener('click', () => {
-  const isMuted = audio.toggleMute();
-  audioToggleBtn.textContent = isMuted ? '🔇 Sound: Mute' : '🔊 Sound: Aktif';
+audioModeSelect.addEventListener('change', (e) => {
+  const val = e.target.value;
+  if (val === 'upload') {
+    audioFileInput.click();
+  } else {
+    audio.setMode(val);
+  }
+});
+
+audioFileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const objectUrl = URL.createObjectURL(file);
+    audio.setCustomAudioUrl(objectUrl);
+    audio.setMode('song');
+    audioModeSelect.value = 'song';
+  }
 });
 
 cameraSelect.addEventListener('change', (e) => {
