@@ -15,6 +15,7 @@ const audioModeSelect = document.getElementById('audio-mode-select');
 const audioFileInput = document.getElementById('audio-file-input');
 const audioStartInput = document.getElementById('audio-start-input');
 const audioStartVal = document.getElementById('audio-start-val');
+const propSelect = document.getElementById('prop-select');
 const cameraSelect = document.getElementById('camera-select');
 const captureBtn = document.getElementById('capture-btn');
 const previewModal = document.getElementById('preview-modal');
@@ -42,12 +43,15 @@ hands.onResults((results) => {
   let peaceDetected = false;
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    renderer.setHandLandmarks(results.multiHandLandmarks[0]);
     for (const landmarks of results.multiHandLandmarks) {
       if (isPeaceGesture(landmarks)) {
         peaceDetected = true;
         break;
       }
     }
+  } else {
+    renderer.setHandLandmarks(null);
   }
 
   // Update UI & Renderers
@@ -154,6 +158,12 @@ if (audioStartInput) {
     const sec = e.target.value;
     if (audioStartVal) audioStartVal.textContent = sec;
     audio.setSongStartTime(sec);
+  });
+}
+
+if (propSelect) {
+  propSelect.addEventListener('change', (e) => {
+    renderer.setActiveProp(e.target.value);
   });
 }
 
