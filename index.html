@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Foto Kita Blur ✌️ | Real-time Gesture Blur</title>
+  <title>Foto Kita Blur ✌️ | Real-time Gesture Blur & Photobooth</title>
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
@@ -21,9 +21,21 @@
     <div class="viewport-container">
       <video id="webcam-video" playsinline></video>
       <canvas id="output-canvas"></canvas>
+      <div id="countdown-overlay" class="countdown-overlay"></div>
     </div>
 
     <div class="controls-dock">
+      <div class="control-item">
+        <label for="gesture-select">Pola Jari / Gestur Pemicu</label>
+        <select id="gesture-select">
+          <option value="peace">✌️ Peace Sign (Dua Jari)</option>
+          <option value="fist">✊ Genggam Tangan (Fist)</option>
+          <option value="open">🖐️ Telapak Terbuka (Open)</option>
+          <option value="love">🤟 Metal / Love Sign</option>
+          <option value="point">👆 Jari Telunjuk (Point)</option>
+        </select>
+      </div>
+
       <div class="control-item">
         <label for="blur-slider">Kekuatan Blur (<span id="blur-val">18</span>px)</label>
         <input type="range" id="blur-slider" min="5" max="40" value="18" />
@@ -61,18 +73,23 @@
         <select id="camera-select"></select>
       </div>
 
-      <div class="control-item">
-        <label>&nbsp;</label>
-        <button id="capture-btn" class="btn-primary">
-          📸 Ambil Foto
-        </button>
+      <div class="control-item capture-group">
+        <label>Ambil Foto / Photobooth</label>
+        <div class="btn-group">
+          <button id="capture-btn" class="btn-primary" title="Ambil 1 Foto Single">
+            📸 Single
+          </button>
+          <button id="capture-grid-btn" class="btn-secondary btn-accent" title="Ambil 4 Foto Strip Photobooth">
+            🎞️ Photobooth 4-Grid
+          </button>
+        </div>
       </div>
     </div>
   </main>
 
   <div id="preview-modal" class="modal-overlay">
     <div class="modal-card">
-      <h2>Foto Kita Blur</h2>
+      <h2 id="modal-title">Foto Kita Blur ✌️</h2>
       <img id="captured-img" alt="Captured Photo" />
       <div class="modal-actions">
         <button id="close-modal-btn" class="btn-secondary">Tutup</button>
