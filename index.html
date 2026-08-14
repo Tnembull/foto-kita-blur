@@ -4,12 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Foto Kita Blur ✌️ | Real-time Gesture Blur & Photobooth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
+  <!-- Ambient background glow elements -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+
   <header>
     <div class="logo-group">
-      <h1>Foto Kita Blur ✌️</h1>
+      <span class="logo-icon">📸</span>
+      <h1>Foto Kita Blur <span class="accent-text">✌️</span></h1>
     </div>
     <div id="status-badge" class="status-badge">
       <span class="dot"></span>
@@ -21,12 +29,20 @@
     <div class="viewport-container">
       <video id="webcam-video" playsinline></video>
       <canvas id="output-canvas"></canvas>
+      
+      <!-- Aesthetic Viewport Camera HUD Overlay -->
+      <div class="hud-corner top-left"></div>
+      <div class="hud-corner top-right"></div>
+      <div class="hud-corner bottom-left"></div>
+      <div class="hud-corner bottom-right"></div>
+      <div class="hud-rec-badge">REC <span class="rec-dot"></span></div>
+
       <div id="countdown-overlay" class="countdown-overlay"></div>
     </div>
 
     <div class="controls-dock">
       <div class="control-item">
-        <label for="gesture-select">Pola Jari / Gestur Pemicu</label>
+        <label for="gesture-select">✨ Pola Gestur Pemicu</label>
         <select id="gesture-select">
           <option value="peace">✌️ Peace Sign (Dua Jari)</option>
           <option value="fist">✊ Genggam Tangan (Fist)</option>
@@ -37,14 +53,14 @@
       </div>
 
       <div class="control-item">
-        <label for="blur-slider">Kekuatan Blur (<span id="blur-val">18</span>px)</label>
+        <label for="blur-slider">🎚️ Kekuatan Blur (<span id="blur-val">18</span>px)</label>
         <input type="range" id="blur-slider" min="5" max="40" value="18" />
       </div>
 
       <div class="control-item">
-        <label for="audio-mode-select">Pilih Musik / Audio</label>
+        <label for="audio-mode-select">🎵 Musik & Sound Effect</label>
         <select id="audio-mode-select">
-          <option value="song">🎵 Sal Priadi - Foto Kita Blur</option>
+          <option value="song">🎶 Sal Priadi - Foto Kita Blur</option>
           <option value="synth">🔔 Sound Effect Synth</option>
           <option value="upload">📁 Upload MP3 Sendiri...</option>
           <option value="muted">🔇 Mute Audio</option>
@@ -53,12 +69,12 @@
       </div>
 
       <div class="control-item">
-        <label for="audio-start-input">Mulai Detik Lirik (<span id="audio-start-val">42</span>s)</label>
+        <label for="audio-start-input">⏱️ Mulai Detik Lirik (<span id="audio-start-val">42</span>s)</label>
         <input type="range" id="audio-start-input" min="0" max="180" value="42" />
       </div>
 
       <div class="control-item">
-        <label for="prop-select">Stiker / Properti Lucu</label>
+        <label for="prop-select">🎀 Stiker & Properti Lucu</label>
         <select id="prop-select">
           <option value="hearts">💕 Hati & Sparkles Melayang</option>
           <option value="cat">🐱 Stiker Kucing Lucu</option>
@@ -69,18 +85,18 @@
       </div>
 
       <div class="control-item">
-        <label for="camera-select">Pilih Kamera</label>
+        <label for="camera-select">📷 Input Kamera</label>
         <select id="camera-select"></select>
       </div>
 
       <div class="control-item capture-group">
-        <label>Ambil Foto / Photobooth</label>
+        <label>📸 Mode Ambil Foto</label>
         <div class="btn-group">
           <button id="capture-btn" class="btn-primary" title="Ambil 1 Foto Single">
-            📸 Single
+            <span>📸</span> Single
           </button>
           <button id="capture-grid-btn" class="btn-secondary btn-accent" title="Ambil 4 Foto Strip Photobooth">
-            🎞️ Photobooth 4-Grid
+            <span>🎞️</span> 4-Grid Strip
           </button>
         </div>
       </div>
@@ -90,7 +106,9 @@
   <div id="preview-modal" class="modal-overlay">
     <div class="modal-card">
       <h2 id="modal-title">Foto Kita Blur ✌️</h2>
-      <img id="captured-img" alt="Captured Photo" />
+      <div class="modal-img-wrapper">
+        <img id="captured-img" alt="Captured Photo" />
+      </div>
       <div class="modal-actions">
         <button id="close-modal-btn" class="btn-secondary">Tutup</button>
         <a id="download-btn" class="btn-primary" download="foto-kita-blur.png">Download Foto</a>
