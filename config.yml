@@ -1,0 +1,7 @@
+tunnel: 5a031fff-25e0-423e-8181-950fd2a5179a
+credentials-file: /home/bulindev/.cloudflared/5a031fff-25e0-423e-8181-950fd2a5179a.json
+
+ingress:
+  - hostname: foto-blur.bulindev.tech
+    service: http://localhost:3000
+  - service: http_status:404
