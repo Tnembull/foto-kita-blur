@@ -271,7 +271,7 @@ main {
   width: 100%;
   padding: 0.65rem 0.85rem;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f172a;
   border: 1px solid var(--panel-border);
   color: var(--text-main);
   font-family: var(--font-family-body);
@@ -282,8 +282,21 @@ main {
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
+.control-item select option {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 0.6rem 0.8rem;
+}
+
+.control-item select option:hover,
+.control-item select option:focus,
+.control-item select option:checked {
+  background-color: #1e293b;
+  color: #f472b6;
+}
+
 .control-item select:hover, .control-item select:focus {
-  background: rgba(255, 255, 255, 0.09);
+  background: #1e293b;
   border-color: var(--accent-pink);
   box-shadow: 0 0 12px rgba(236, 72, 153, 0.2);
 }
