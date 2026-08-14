@@ -1,3 +1,7 @@
+import { VisionShaders } from './shaders.js';
+import { PortalEngine } from './portal.js';
+import { SciFiHUD } from './hud.js';
+
 export class CanvasRenderer {
   constructor(canvasElement, videoElement) {
     this.canvas = canvasElement;
@@ -10,8 +14,14 @@ export class CanvasRenderer {
     this.isPeaceActive = false;
     
     this.handLandmarks = null;
+    this.allHandsLandmarks = [];
     this.activeProp = 'hearts'; // 'hearts' | 'cat' | 'thug' | 'polaroid' | 'none'
-    
+    this.activeShader = 'normal'; // 'normal' | 'thermal' | 'xray' | 'matrix' | 'neon' | 'pixelate' | 'nightvision' | 'vaporwave'
+    this.activeGesture = 'peace';
+
+    this.portalEngine = new PortalEngine();
+    this.hud = new SciFiHUD();
+
     // Floating particles (Hearts & Stars)
     this.particles = [];
     this.initParticles();
@@ -27,12 +37,21 @@ export class CanvasRenderer {
     }));
   }
 
-  setHandLandmarks(landmarks) {
+  setHandLandmarks(landmarks, allHands = []) {
     this.handLandmarks = landmarks;
+    this.allHandsLandmarks = allHands;
   }
 
   setActiveProp(propName) {
     this.activeProp = propName;
+  }
+
+  setActiveShader(shaderName) {
+    this.activeShader = shaderName;
+  }
+
+  setActiveGesture(gestureName) {
+    this.activeGesture = gestureName;
   }
 
   setTargetBlur(isActive) {
@@ -47,12 +66,15 @@ export class CanvasRenderer {
     }
   }
 
-  renderFrame() {
+  renderFrame(onSlingshotLaunch) {
     if (!this.video.videoWidth || !this.video.videoHeight) return;
 
-    if (this.canvas.width !== this.video.videoWidth) {
-      this.canvas.width = this.video.videoWidth;
-      this.canvas.height = this.video.videoHeight;
+    const width = this.video.videoWidth;
+    const height = this.video.videoHeight;
+
+    if (this.canvas.width !== width) {
+      this.canvas.width = width;
+      this.canvas.height = height;
     }
 
     this.currentBlur += (this.targetBlur - this.currentBlur) * 0.15;
@@ -61,7 +83,7 @@ export class CanvasRenderer {
     this.ctx.save();
     
     // Mirror the video canvas display
-    this.ctx.translate(this.canvas.width, 0);
+    this.ctx.translate(width, 0);
     this.ctx.scale(-1, 1);
 
     if (this.currentBlur > 0) {
@@ -70,13 +92,44 @@ export class CanvasRenderer {
       this.ctx.filter = 'none';
     }
 
-    this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(this.video, 0, 0, width, height);
     this.ctx.restore();
 
-    // Render Cute Props & Overlay Effects strictly ONLY when Peace Gesture is active!
+    const time = performance.now();
+
+    // 1. Vision Shader (Applied on Active Gesture or Shader selected)
+    if ((this.isPeaceActive || this.activeShader !== 'normal') && this.activeShader !== 'normal') {
+      VisionShaders.applyFilter(this.ctx, width, height, this.activeShader, time);
+    }
+
+    // 2. Render Hand Portal Framing (2-Hand Quad Warp)
+    const portalQuad = this.portalEngine.getPortalQuad(this.allHandsLandmarks, width, height);
+    if (portalQuad) {
+      this.portalEngine.renderPortalFrame(this.ctx, portalQuad, time);
+    }
+
+    // 3. Render Slingshot Mechanics (✌️👌)
+    if (this.allHandsLandmarks && this.allHandsLandmarks.length >= 2) {
+      this.portalEngine.processSlingshot(this.ctx, this.allHandsLandmarks, width, height, onSlingshotLaunch);
+    }
+
+    // 4. Render Pinch Lens (🤏)
+    if (this.handLandmarks) {
+      this.portalEngine.renderPinchLens(this.ctx, this.handLandmarks, width, height);
+    }
+
+    // 5. Render Cute Props & Overlay Effects strictly ONLY when Gesture is active!
     if (this.isPeaceActive && this.activeProp !== 'none') {
       this.renderProps();
     }
+
+    // 6. Render Sci-Fi Telemetry HUD
+    this.hud.render(this.ctx, width, height, {
+      handCount: this.allHandsLandmarks.length,
+      activeShader: this.activeShader,
+      activeGesture: this.activeGesture,
+      portalActive: this.isPeaceActive || !!portalQuad
+    });
   }
 
   renderProps() {
@@ -86,13 +139,11 @@ export class CanvasRenderer {
     // 1. Polaroid Aesthetic Frame & Sticker Caption
     if (this.activeProp === 'polaroid' || this.isPeaceActive) {
       ctx.save();
-      // Outer Polaroid Border
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.lineWidth = 12;
       ctx.strokeRect(10, 10, width - 20, height - 20);
 
-      // Aesthetic Sticker Badge at bottom
-      ctx.fillStyle = 'rgba(236, 72, 153, 0.85)'; // Pink glow badge
+      ctx.fillStyle = 'rgba(236, 72, 153, 0.85)';
       ctx.shadowColor = 'rgba(236, 72, 153, 0.6)';
       ctx.shadowBlur = 15;
       
@@ -124,7 +175,6 @@ export class CanvasRenderer {
       ctx.font = '28px sans-serif';
       ctx.textAlign = 'center';
 
-      // Update & Draw Floating Particles
       this.particles.forEach((p) => {
         p.y -= p.speedY;
         if (p.y < -0.1) p.y = 1.1;
@@ -134,7 +184,6 @@ export class CanvasRenderer {
         ctx.fillText(p.char, px, py);
       });
 
-      // Draw extra hearts around Finger Tips if hand landmarks exist
       if (this.handLandmarks && this.handLandmarks[8] && this.handLandmarks[12]) {
         const indexX = (1 - this.handLandmarks[8].x) * width;
         const indexY = this.handLandmarks[8].y * height;

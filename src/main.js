@@ -11,6 +11,7 @@ const countdownOverlay = document.getElementById('countdown-overlay');
 const statusBadge = document.getElementById('status-badge');
 const statusText = document.getElementById('status-text');
 const gestureSelect = document.getElementById('gesture-select');
+const shaderSelect = document.getElementById('shader-select');
 const blurSlider = document.getElementById('blur-slider');
 const blurValText = document.getElementById('blur-val');
 const audioModeSelect = document.getElementById('audio-mode-select');
@@ -48,7 +49,7 @@ hands.onResults((results) => {
   let gestureDetected = false;
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    renderer.setHandLandmarks(results.multiHandLandmarks[0]);
+    renderer.setHandLandmarks(results.multiHandLandmarks[0], results.multiHandLandmarks);
     for (const landmarks of results.multiHandLandmarks) {
       if (isGestureActive(landmarks, activePattern)) {
         gestureDetected = true;
@@ -56,7 +57,7 @@ hands.onResults((results) => {
       }
     }
   } else {
-    renderer.setHandLandmarks(null);
+    renderer.setHandLandmarks(null, []);
   }
 
   // Update UI & Renderers
@@ -74,7 +75,7 @@ hands.onResults((results) => {
 
 // Animation Loop
 function loop() {
-  renderer.renderFrame();
+  renderer.renderFrame(() => audio.playSlingshotLaunchSFX());
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
@@ -232,6 +233,13 @@ async function startPhotoboothGridCapture() {
 if (gestureSelect) {
   gestureSelect.addEventListener('change', (e) => {
     activePattern = e.target.value;
+    renderer.setActiveGesture(activePattern);
+  });
+}
+
+if (shaderSelect) {
+  shaderSelect.addEventListener('change', (e) => {
+    renderer.setActiveShader(e.target.value);
   });
 }
 
